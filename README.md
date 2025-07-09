@@ -11,7 +11,7 @@ Classic Snake game with potential P2P play between two browsers, without a need 
 - [ ] Implement Display class
   - [ ] drawSnake() 
   - [ ] drawApple()
-  - [ ] clear()
+  - [x] clear()
 
 - [ ] Implement Game class
   - [ ] drawing the snake and apple with correct coordinates

@@ -1,0 +1,11 @@
+.hzntl-list {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+}
+
+.clickable {
+    color: darkslateblue;
+    text-decoration: underline;
+    cursor: pointer;
+}
