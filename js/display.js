@@ -34,15 +34,25 @@ class Display {
 
         //========= FOR TESTING ==========
         let drawTest = document.getElementById("draw-test");
-        drawTest.addEventListener("click", () => this.draw());
+        drawTest.children[0].addEventListener("click", () => this.draw({snake: [], apple: []}));
+        drawTest.children[1].addEventListener("click", () => this.drawSnake([
+            [1,1], [2,1], [3,1], [4,1], [4,2], [4,3]
+        ]));
+        drawTest.children[2].addEventListener("click", () => this.drawApple([6,5]));
     }
 
 
     draw(e) {
         this.clear();
         this.drawField();
-        //this.drawSnake(e.snake);
-        //this.drawApple(e.apple);
+
+        if (e.snake) {
+            this.drawSnake(e.snake);
+        }
+
+        if (e.apple) {
+            this.drawApple(e.apple);
+        }
     }
 
 
@@ -75,12 +85,14 @@ class Display {
 
 
     drawSnake(snake) {
-
+        snake.forEach(block => {
+            this.drawSquare(block[0], block[1], this.filledSquareColor);
+        })
     }
 
 
     drawApple(apple) {
-
+        this.drawSquare(apple[0], apple[1], this.filledSquareColor);
     }
     
 
@@ -88,5 +100,3 @@ class Display {
         this.ctx.clearRect(0, 0, this.width, this.height);
     }
 }
-
-new Display();

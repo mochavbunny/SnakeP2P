@@ -1,11 +1,18 @@
+.hzntl-list-heading {
+    margin: 0;
+}
+
 .hzntl-list {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 .clickable {
     color: darkslateblue;
     text-decoration: underline;
     cursor: pointer;
+    margin: 5px 20px 5px 0px;
 }
