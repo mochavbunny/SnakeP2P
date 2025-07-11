@@ -1,8 +1,8 @@
-.hzntl-list-heading {
+.horizontal-list-heading {
     margin: 0;
 }
 
-.hzntl-list {
+.horizontal-list {
     display: flex;
     flex-direction: row;
     list-style: none;
