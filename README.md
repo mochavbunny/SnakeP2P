@@ -8,10 +8,10 @@ Classic Snake game with potential P2P play between two browsers, without a need 
   - [ ] classes with boilerplate code
   - [ ] html with all classes in the head
 
-- [ ] Implement Display class
-  - [ ] drawSnake() 
-  - [ ] drawApple()
-  - [ ] clear()
+- [x] Implement Display class
+  - [x] drawSnake() 
+  - [x] drawApple()
+  - [x] clear()
 
 - [ ] Implement Game class
   - [ ] drawing the snake and apple with correct coordinates
