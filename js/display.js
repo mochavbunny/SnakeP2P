@@ -1,10 +1,19 @@
 "use strict";
 
 class Display {
+    static backgroundColor = "#e0e0e0";
+    static blankSquareColor = "#c0c0c0";
+    static filledSquareColor = "#505050";
+
+    static squareMarginPercent = 5;
+
+    static defaultWidth = 800;
+    static defaultHeight = 600;
+
     constructor(
         canvasID = "game-canvas",
-        width = Constants.defaultWidth,
-        height = Constants.defaultHeight
+        width = Display.defaultWidth,
+        height = Display.defaultHeight
     ) {
         const canvas = document.getElementById(canvasID);
         canvas.width = width;
@@ -16,8 +25,8 @@ class Display {
 
         this.squareWidth = this.width / Constants.columns;
         this.squareHeight = this.height / Constants.rows;
-        this.squareMarginX = this.squareWidth * (Constants.squareMarginPercent / 100);
-        this.squareMarginY = this.squareHeight * (Constants.squareMarginPercent / 100);
+        this.squareMarginX = this.squareWidth * (Display.squareMarginPercent / 100);
+        this.squareMarginY = this.squareHeight * (Display.squareMarginPercent / 100);
     }
 
 
@@ -40,14 +49,14 @@ class Display {
 
         for (let row = 0; row < Constants.rows; row++) {
             for (let col = 0; col < Constants.columns; col++) {
-                this.drawSquare(col, row, Constants.blankSquareColor);
+                this.drawSquare(col, row, Display.blankSquareColor);
             }
         }
     }
 
 
     drawBackground() {
-        this.ctx.fillStyle = Constants.backgroundColor;
+        this.ctx.fillStyle = Display.backgroundColor;
         this.ctx.fillRect(0, 0, this.width, this.height);
     }
 
@@ -65,13 +74,13 @@ class Display {
 
     drawSnake(snake) {
         snake.forEach(block => {
-            this.drawSquare(block[0], block[1], Constants.filledSquareColor);
+            this.drawSquare(block[0], block[1], Display.filledSquareColor);
         })
     }
 
 
     drawApple(apple) {
-        this.drawSquare(apple[0], apple[1], Constants.filledSquareColor);
+        this.drawSquare(apple[0], apple[1], Display.filledSquareColor);
     }
     
 
@@ -79,5 +88,3 @@ class Display {
         this.ctx.clearRect(0, 0, this.width, this.height);
     }
 }
-
-new Display();
