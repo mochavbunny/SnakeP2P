@@ -26,7 +26,7 @@ class Game {
 
 
     static run() {
-        this.#display = new Display();
+        Display.initialize();
 
         this.#initBoard();
         this.#initControls();
@@ -97,7 +97,7 @@ class Game {
             }
         }
 
-        this.#display.draw(this.#snake, this.#apple);
+        Display.draw(this.#snake, this.#apple);
     }
 
 
