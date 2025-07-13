@@ -14,7 +14,7 @@ Classic Snake game with potential P2P play between two browsers, without a need 
   - [x] clear()
   - [x] different colour for snake head and apple
 
-- [ ] Implement Game class
+- [x] Implement Game class
   - [X] drawing the snake and apple with correct coordinates
   - [X] snake movement with keyboard keys
   - [X] collision checking (snake and walls) / game over flag
