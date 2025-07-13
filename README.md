@@ -4,9 +4,9 @@ Classic Snake game with potential P2P play between two browsers, without a need 
 
 ## TODO LIST
 
-- [ ] Setting the environment with classes and boilerplate
-  - [ ] classes with boilerplate code
-  - [ ] html with all classes in the head
+- [X] Setting the environment with classes and boilerplate
+  - [X] classes with boilerplate code
+  - [X] html with all classes in the head
 
 - [x] Implement Display class
   - [x] drawSnake() 
@@ -23,9 +23,3 @@ Classic Snake game with potential P2P play between two browsers, without a need 
   - [ ] snake speeds up when it eats an apple
 
 - [ ] Talk about P2P implementation and update this list
-
-## Temporary implementation details (subject to change)
-- Display - rendering on canvas with exposed drawSnake(snake), drawApple(x, y), clear()
-- Game - main loop with logic and drawing calls
-- Utils - common functions
-- In the future Network - with exposed getOpponentSnake(): snake

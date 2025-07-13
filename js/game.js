@@ -1,3 +1,5 @@
+"use strict";
+
 class Game {
     static #display;
 
@@ -18,10 +20,86 @@ class Game {
      */
     static #snakeNewDirection;
     static #isGameOver = false;
+    static #isPaused = true;
 
     static #apple;
 
-    static isPaused = true;
+
+    static run() {
+        this.#display = new Display();
+
+        this.#initBoard();
+        this.#initControls();
+        setInterval(() => this.#update(), 250);
+
+        alert("Press Esc to unpause");
+    }
+
+
+    static #initControls() {
+        document.addEventListener("keydown", (event) => {
+            switch (event.key) {
+                case "Escape":
+                    event.preventDefault();
+                    this.#isPaused = !this.#isPaused;
+                    break;
+                case "ArrowUp":
+                    event.preventDefault();
+                    this.#snakeNewDirection = "up";
+                    break;
+                case "ArrowDown":
+                    event.preventDefault();
+                    this.#snakeNewDirection = "down";
+                    break;
+                case "ArrowLeft":
+                    event.preventDefault();
+                    this.#snakeNewDirection = "left";
+                    break;
+                case "ArrowRight":
+                    event.preventDefault();
+                    this.#snakeNewDirection = "right";
+                    break;
+
+            }
+        })
+    }
+
+
+    static #initBoard() {
+        this.#snake = [[2, 1], [1, 1]];
+        this.#snakeNewDirection = "right";
+
+        const emptySquares = this.#getEmptySquares();
+        this.#spawnApple(emptySquares);
+    }
+
+
+    static #update() {
+        if (!this.#isPaused && !this.#isGameOver) {
+            this.#updateDirection();
+            this.#checkHeadCollision();
+
+            // Additional check after possible #checkHeadCollision() isGameOver changes.
+            if (!this.#isGameOver) {
+                this.#moveSnake();
+            }
+
+            // Apple was consumed.
+            if (!this.#apple) {
+                const emptySquares = this.#getEmptySquares();
+
+                if (emptySquares.length > 0) {
+                    this.#spawnApple(emptySquares);
+                } else {
+                    alert("You won");
+                    this.#isGameOver = true;
+                }
+            }
+        }
+
+        this.#display.draw(this.#snake, this.#apple);
+    }
+
 
     static #updateDirection() {
         if (!this.#snakeNewDirection) {
@@ -76,11 +154,16 @@ class Game {
     }
 
 
-    static #moveTail() {
-        for (let i = this.#snake.length - 1; i >= 1; i--) {
-            const nextBlock = this.#snake[i - 1];
-            this.#snake[i] = [nextBlock[0], nextBlock[1]];
-        }
+    /**
+     * Movement is implemented in reverse.
+     * The last block is moved into the position of the next one.
+     * And the next block is moved into the position of the one after.
+     * The process is repeated until the head.
+     * Then the head is moved in the requested direction.
+     */
+    static #moveSnake() {
+        this.#moveTail();
+        this.#moveBlock(this.#snake[0], this.#snakeDirection);
     }
 
 
@@ -102,16 +185,11 @@ class Game {
     }
 
 
-    /**
-     * Movement is implemented in reverse.
-     * The last block is moved into the position of the next one.
-     * And the next block is moved into the position of the one after.
-     * The process is repeated until the head.
-     * Then the head is moved in the requested direction.
-     */
-    static #moveSnake() {
-        this.#moveTail();
-        this.#moveBlock(this.#snake[0], this.#snakeDirection);
+    static #moveTail() {
+        for (let i = this.#snake.length - 1; i >= 1; i--) {
+            const nextBlock = this.#snake[i - 1];
+            this.#snake[i] = [nextBlock[0], nextBlock[1]];
+        }
     }
 
 
@@ -142,84 +220,7 @@ class Game {
         const i = Utils.getRandomInt(0, emptySquares.length - 1);
         this.#apple = emptySquares[i];
     }
-
-
-    static #update() {
-        if (!this.isPaused && !this.#isGameOver) {
-            this.#updateDirection();
-            this.#checkHeadCollision();
-
-            // Additional check after possible #checkHeadCollision() isGameOver changes.
-            if (!this.#isGameOver) {
-                this.#moveSnake();
-            }
-
-            // Apple was consumed.
-            if (!this.#apple) {
-                const emptySquares = this.#getEmptySquares();
-
-                if (emptySquares.length > 0) {
-                    this.#spawnApple(emptySquares);
-                } else {
-                    alert("You won");
-                    this.#isGameOver = true;
-                }
-            }
-        }
-
-        this.#display.draw(this.#snake, this.#apple);
-    }
-
-
-    static #initBoard() {
-        this.#snake = [[2, 1], [1, 1]];
-        this.#snakeNewDirection = "right";
-
-        const emptySquares = this.#getEmptySquares();
-        this.#spawnApple(emptySquares);
-    }
-
-
-    static #initControls() {
-        document.addEventListener("keydown", (event) => {
-            switch (event.key) {
-                case "Escape":
-                    event.preventDefault();
-                    this.isPaused = !this.isPaused;
-                    break;
-                case "ArrowUp":
-                    event.preventDefault();
-                    this.#snakeNewDirection = "up";
-                    break;
-                case "ArrowDown":
-                    event.preventDefault();
-                    this.#snakeNewDirection = "down";
-                    break;
-                case "ArrowLeft":
-                    event.preventDefault();
-                    this.#snakeNewDirection = "left";
-                    break;
-                case "ArrowRight":
-                    event.preventDefault();
-                    this.#snakeNewDirection = "right";
-                    break;
-
-            }
-        })
-    }
-
-
-    static run() {
-        this.#display = new Display();
-
-        this.#initBoard();
-        this.#initControls();
-        setInterval(() => this.#update(), 250);
-
-        alert("Press Esc to unpause");
-    }
 }
-
 
 document.addEventListener("DOMContentLoaded", () => {
     Game.run();

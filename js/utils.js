@@ -1,3 +1,5 @@
+"use strict";
+
 class Utils {
     static #oppositeDirections = {
         "right": "left",
@@ -6,9 +8,11 @@ class Utils {
         "down":  "up",
     }
 
+
     static areOppositeDirections(d0, d1) {
         return this.#oppositeDirections[d0] === d1;
     }
+
 
     static getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min) + min);
