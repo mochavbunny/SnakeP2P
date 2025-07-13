@@ -26,6 +26,5 @@ Classic Snake game with potential P2P play between two browsers, without a need 
 ## Temporary implementation details (subject to change)
 - Display - rendering on canvas with exposed drawSnake(snake), drawApple(x, y), clear()
 - Game - main loop with logic and drawing calls
-- Snake - dataclass with an array of coordinates
-- In the future Network - with exposed getOpponentSnake(): snake
 - Utils - common functions
+- In the future Network - with exposed getOpponentSnake(): snake
