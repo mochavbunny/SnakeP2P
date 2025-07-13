@@ -4,9 +4,9 @@ Classic Snake game with potential P2P play between two browsers, without a need 
 
 ## TODO LIST
 
-- [ ] Setting the environment with classes and boilerplate
-  - [ ] classes with boilerplate code
-  - [ ] html with all classes in the head
+- [X] Setting the environment with classes and boilerplate
+  - [X] classes with boilerplate code
+  - [X] html with all classes in the head
 
 - [x] Implement Display class
   - [x] drawSnake() 
