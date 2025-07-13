@@ -43,25 +43,28 @@ class Game {
     static #checkHeadCollision() {
         const currentHead = this.#snake[0];
 
+        // Position at which the snake's head
+        // is going to be after the update() is done
         const futureHead = [currentHead[0], currentHead[1]];
         this.#moveBlock(futureHead, this.#snakeDirection);
 
+        // Apple collision
         if (futureHead[0] === this.#apple[0] && futureHead[1] === this.#apple[1]) {
             this.#apple = null;
             this.#snake.push([0, 0]);
             return;
         }
 
-        if (futureHead[0] < 0 || futureHead[0] > Constants.columns - 1) {
+        // Wall collisions
+        const horizontalCollision = futureHead[0] < 0 || futureHead[0] > Constants.columns - 1;
+        const verticalCollision = futureHead[1] < 0 || futureHead[1] > Constants.rows - 1;
+
+        if (horizontalCollision || verticalCollision) {
             this.#isGameOver = true;
             return;
         }
 
-        if (futureHead[1] < 0 || futureHead[1] > Constants.rows - 1) {
-            this.#isGameOver = true;
-            return;
-        }
-
+        // Snake tail collisions
         for (let i = 1; i < this.#snake.length; i++) {
             const block = this.#snake[i];
 
