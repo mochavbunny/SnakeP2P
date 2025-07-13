@@ -22,9 +22,3 @@ Classic Snake game with potential P2P play between two browsers, without a need 
   - [ ] prettier game over states with an option to restart
 
 - [ ] Talk about P2P implementation and update this list
-
-## Temporary implementation details (subject to change)
-- Display - rendering on canvas with exposed drawSnake(snake), drawApple(x, y), clear()
-- Game - main loop with logic and drawing calls
-- Utils - common functions
-- In the future Network - with exposed getOpponentSnake(): snake
