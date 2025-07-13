@@ -2,36 +2,34 @@
 
 <html lang="en">
 
-<head>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Snake</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="icon" href="favicon.png">
+  </head>
 
-  <meta charset="UTF-8" />
-  <title>Snake</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="" />
-  <link rel="stylesheet" type="text/css" href="css/style.css" />
-  <link rel="icon" href="favicon.png">
+  <body>
 
-</head>
+    <header>
+      <h1>Snake!</h1>
+    </header>
 
-<body>
+    <main>
+      <section>
+          <canvas id="game-canvas" width="200" height="150"></canvas>
+      </section>
+    </main>
 
-  <header>
-    <h1>Snake!</h1>
-  </header>
+    <footer></footer>
 
-  <main>
-    <section>
-        <canvas id="game-canvas" width="200" height="150"></canvas>
-    </section>
-  </main>
+    <script src="js/constants.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/display.js"></script>
+    <script src="js/utils.js"></script>
 
-  <footer></footer>
-
-  <script src="js/constants.js"></script>
-  <script src="js/game.js"></script>
-  <script src="js/display.js"></script>
-  <script src="js/utils.js"></script>
-  
-</body>
+  </body>
 
 </html>
