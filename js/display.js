@@ -10,6 +10,7 @@ class Display {
     static defaultWidth = 800;
     static defaultHeight = 600;
 
+    
     constructor(
         canvasID = "game-canvas",
         width = Display.defaultWidth,
