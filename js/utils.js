@@ -1,3 +1,5 @@
+"use strict";
+
 class Utils {
     static #oppositeDirections = {
         "right": "left",
