@@ -21,18 +21,30 @@ class Game {
     static #snakeNewDirection;
     static #isGameOver = false;
     static #isPaused = true;
+    static #updateInterval;
 
     static #apple;
 
 
     static run() {
         Display.initialize();
-
-        this.#initBoard();
+        
+        Utils.setWindow("game-mode");
+        this.#initButtons();
         this.#initControls();
-        setInterval(() => this.#update(), 250);
+        Display.draw();
+        //this.#initGame();
 
-        alert("Press Esc to unpause");
+        //alert("Press Esc to unpause");
+    }
+
+
+    static #initBoard() {
+        this.#snake = [[2, 1], [1, 1]];
+        this.#snakeNewDirection = "right";
+
+        const emptySquares = this.#getEmptySquares();
+        this.#spawnApple(emptySquares);
     }
 
 
@@ -40,6 +52,7 @@ class Game {
         document.addEventListener("keydown", (event) => {
             switch (event.key) {
                 case "Escape":
+                    // Consider removing
                     event.preventDefault();
                     this.#isPaused = !this.#isPaused;
                     break;
@@ -65,12 +78,38 @@ class Game {
     }
 
 
-    static #initBoard() {
-        this.#snake = [[2, 1], [1, 1]];
-        this.#snakeNewDirection = "right";
+    static #initButtons() {
+        const sp = document.getElementById("singleplayer-button");
+        const mp = document.getElementById("multiplayer-button");
+        const gm = document.getElementById("game-mode-button");
+        const rt = document.getElementById("retry-button");
 
-        const emptySquares = this.#getEmptySquares();
-        this.#spawnApple(emptySquares);
+        sp.addEventListener("click", e => {
+            Utils.hideWindow();
+            this.#initGame();
+        });
+
+        mp.addEventListener("click", e => {
+            alert("Coming soon!");
+        });
+
+        gm.addEventListener("click", e => {
+            Utils.setWindow("game-mode");
+        });
+
+        rt.addEventListener("click", e => {
+            Utils.hideWindow();
+            this.#initGame();
+        });
+    }
+
+
+    static #initGame() {
+        this.#isPaused = false;
+        this.#isGameOver = false;
+        this.#initBoard();
+
+        this.#updateInterval = setInterval(() => this.#update(), 250);
     }
 
 
@@ -95,6 +134,10 @@ class Game {
                     this.#isGameOver = true;
                 }
             }
+        } else if (this.#isGameOver) {
+            clearInterval(this.#updateInterval);
+            Utils.setWindow("game-over");
+            Utils.showWindow();
         }
 
         Display.draw(this.#snake, this.#apple);

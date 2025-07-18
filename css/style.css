@@ -1,3 +1,54 @@
+body {
+    margin: 0 auto;
+    width: 800px;
+}
+
+h1 {
+    font-family: sans-serif;
+}
+
+#main-section {
+    position: relative;
+}
+
+#main-section .window, #main-canvas {
+    position: absolute;
+}
+
+.window {
+    background-color: white;
+    width: 600px;
+    height: 400px;
+    top: 100px;
+    left: 100px;
+}
+
+.window-page {
+    display: none;
+    margin: 100px;
+}
+
+.window-heading {
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 32px;
+}
+
+.window-button-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.window-button {
+    font-family: sans-serif;
+    font-size: 16px;
+    background-color: #DFDFDF;
+    border-radius: 5px;
+    width: 200px;
+    height: 64px;
+    margin: 30px 10px;
+}
+
 .horizontal-list-heading {
     margin: 0;
 }
