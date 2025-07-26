@@ -1,12 +1,13 @@
 "use strict"
 
 class Menu {
-    static #menuMain = document.getElementById("menu-main");
+    static #menuMain;
     static #currentMenuPage;
     static #pages;
 
     
     static init() {
+        this.#menuMain = document.getElementById("menu-main");
         this.#pages = {
             [Constants.menuPages.gameMode]: document.getElementById(Constants.menuPages.gameMode),
             [Constants.menuPages.gameOver]: document.getElementById(Constants.menuPages.gameOver)
