@@ -29,7 +29,7 @@ class Game {
     static run() {
         Display.initialize();
         
-        Menu.setMenu(Constants.menuPage.gameMode);
+        Menu.setMenu(Constants.menuPages.gameMode);
         this.#initButtons();
         this.#initControls();
         Display.draw();
@@ -86,7 +86,7 @@ class Game {
         });
 
         gm.addEventListener("click", e => {
-            Menu.setMenu(Constants.menuPage.gameMode);
+            Menu.setMenu(Constants.menuPages.gameMode);
         });
 
         rt.addEventListener("click", e => {
@@ -128,7 +128,7 @@ class Game {
             }
         } else if (this.#isGameOver) {
             clearInterval(this.#updateInterval);
-            Menu.setMenu(Constants.menuPage.gameOver);
+            Menu.setMenu(Constants.menuPages.gameOver);
             Menu.showMenu();
         }
 
