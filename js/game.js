@@ -29,13 +29,10 @@ class Game {
     static run() {
         Display.initialize();
         
-        Utils.setWindow("game-mode");
+        Menu.setMenu(Constants.menuPage.gameMode);
         this.#initButtons();
         this.#initControls();
         Display.draw();
-        //this.#initGame();
-
-        //alert("Press Esc to unpause");
     }
 
 
@@ -51,11 +48,6 @@ class Game {
     static #initControls() {
         document.addEventListener("keydown", (event) => {
             switch (event.key) {
-                case "Escape":
-                    // Consider removing
-                    event.preventDefault();
-                    this.#isPaused = !this.#isPaused;
-                    break;
                 case "ArrowUp":
                     event.preventDefault();
                     this.#snakeNewDirection = "up";
@@ -85,7 +77,7 @@ class Game {
         const rt = document.getElementById("retry-button");
 
         sp.addEventListener("click", e => {
-            Utils.hideWindow();
+            Menu.hideMenu();
             this.#initGame();
         });
 
@@ -94,11 +86,11 @@ class Game {
         });
 
         gm.addEventListener("click", e => {
-            Utils.setWindow("game-mode");
+            Menu.setMenu(Constants.menuPage.gameMode);
         });
 
         rt.addEventListener("click", e => {
-            Utils.hideWindow();
+            Menu.hideMenu();
             this.#initGame();
         });
     }
@@ -136,8 +128,8 @@ class Game {
             }
         } else if (this.#isGameOver) {
             clearInterval(this.#updateInterval);
-            Utils.setWindow("game-over");
-            Utils.showWindow();
+            Menu.setMenu(Constants.menuPage.gameOver);
+            Menu.showMenu();
         }
 
         Display.draw(this.#snake, this.#apple);
