@@ -1,3 +1,7 @@
+<a href="https://mochavbunny.github.io/SnakeP2P/">
+  <img src="./play-button.svg" height="64" alt="Play button">
+</a>
+
 # SnakeP2P
 
 Classic Snake game with potential P2P play between two browsers, without a need for a server.
