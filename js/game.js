@@ -38,6 +38,7 @@ class Game {
 
     static #initBoard() {
         this.#snake = [[2, 1], [1, 1]];
+        this.#snakeDirection = "right";
         this.#snakeNewDirection = "right";
 
         const emptySquares = this.#getEmptySquares();
