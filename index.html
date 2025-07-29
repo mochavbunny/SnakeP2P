@@ -12,14 +12,35 @@
   </head>
 
   <body>
-
     <header>
-      <h1>Snake!</h1>
+      <h1 id="main-header">Snake</h1>
     </header>
 
     <main>
-      <section>
-          <canvas id="game-canvas" width="200" height="150"></canvas>
+      <section id="main-section">
+        <div class="menu" id="menu-main">
+          <div class="menu-page" id="game-mode-menu">
+            <div class="menu-heading">
+              Select a game mode:
+            </div>
+            <div class="menu-button-container">
+              <button class="menu-button" id="singleplayer-button">Singleplayer</button>
+              <button class="menu-button" id="multiplayer-button">Multiplayer</button>
+            </div>
+          </div>
+
+          <div class="menu-page" id="game-over-menu">
+            <div class="menu-heading">
+              Game over!
+            </div>
+            <div class="menu-button-container">
+              <button class="menu-button" id="game-mode-button">Select game mode</button>
+              <button class="menu-button" id="retry-button">Try again</button>
+            </div>
+          </div>
+        </div>
+
+        <canvas id="game-canvas" width="200" height="150"></canvas>
       </section>
     </main>
 
@@ -27,9 +48,9 @@
 
     <script src="js/constants.js"></script>
     <script src="js/utils.js"></script>
+    <script src="js/menu.js"></script>
     <script src="js/display.js"></script>
     <script src="js/game.js"></script>
-
   </body>
 
 </html>

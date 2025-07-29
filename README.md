@@ -24,5 +24,5 @@ Classic Snake game with potential P2P play between two browsers, without a need 
 - [ ] Talk about P2P implementation and update this list
 
 ## WISHLIST
-- [ ] prettier game over states with an option to restart
+- [x] prettier game over states with an option to restart
 - [ ] snake speeds up when it eats an apple

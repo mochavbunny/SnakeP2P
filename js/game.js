@@ -21,28 +21,33 @@ class Game {
     static #snakeNewDirection;
     static #isGameOver = false;
     static #isPaused = true;
+    static #updateInterval;
 
     static #apple;
 
 
     static run() {
         Display.initialize();
-
-        this.#initBoard();
+        
+        Menu.setMenu(Constants.menuPages.gameMode);
+        this.#initButtons();
         this.#initControls();
-        setInterval(() => this.#update(), 250);
+        Display.draw();
+    }
 
-        alert("Press Esc to unpause");
+
+    static #initBoard() {
+        this.#snake = [[2, 1], [1, 1]];
+        this.#snakeNewDirection = "right";
+
+        const emptySquares = this.#getEmptySquares();
+        this.#spawnApple(emptySquares);
     }
 
 
     static #initControls() {
         document.addEventListener("keydown", (event) => {
             switch (event.key) {
-                case "Escape":
-                    event.preventDefault();
-                    this.#isPaused = !this.#isPaused;
-                    break;
                 case "ArrowUp":
                     event.preventDefault();
                     this.#snakeNewDirection = "up";
@@ -65,12 +70,38 @@ class Game {
     }
 
 
-    static #initBoard() {
-        this.#snake = [[2, 1], [1, 1]];
-        this.#snakeNewDirection = "right";
+    static #initButtons() {
+        const sp = document.getElementById("singleplayer-button");
+        const mp = document.getElementById("multiplayer-button");
+        const gm = document.getElementById("game-mode-button");
+        const rt = document.getElementById("retry-button");
 
-        const emptySquares = this.#getEmptySquares();
-        this.#spawnApple(emptySquares);
+        sp.addEventListener("click", e => {
+            Menu.hideMenu();
+            this.#initGame();
+        });
+
+        mp.addEventListener("click", e => {
+            alert("Coming soon!");
+        });
+
+        gm.addEventListener("click", e => {
+            Menu.setMenu(Constants.menuPages.gameMode);
+        });
+
+        rt.addEventListener("click", e => {
+            Menu.hideMenu();
+            this.#initGame();
+        });
+    }
+
+
+    static #initGame() {
+        this.#isPaused = false;
+        this.#isGameOver = false;
+        this.#initBoard();
+
+        this.#updateInterval = setInterval(() => this.#update(), 250);
     }
 
 
@@ -95,6 +126,10 @@ class Game {
                     this.#isGameOver = true;
                 }
             }
+        } else if (this.#isGameOver) {
+            clearInterval(this.#updateInterval);
+            Menu.setMenu(Constants.menuPages.gameOver);
+            Menu.showMenu();
         }
 
         Display.draw(this.#snake, this.#apple);

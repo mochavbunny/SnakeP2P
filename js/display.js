@@ -39,13 +39,15 @@ class Display {
         this.clear();
         this.drawField();
 
-        this.drawSnake(snake, this.#player1HeadColor, this.#player1BodyColor);
+        if (typeof snake !== "undefined") {
+            this.drawSnake(snake, this.#player1HeadColor, this.#player1BodyColor);
 
-        if (Game.multiplayer) {
-            this.drawSnake(snake, this.#player2HeadColor, this.#player2BodyColor);
+            if (Game.multiplayer) {
+                this.drawSnake(snake, this.#player2HeadColor, this.#player2BodyColor);
+            }
         }
 
-        if (typeof apple !== undefined) {
+        if (typeof apple !== "undefined") {
             this.drawApple(apple);
         }
     }

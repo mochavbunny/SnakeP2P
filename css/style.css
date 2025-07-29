@@ -1,3 +1,54 @@
+body {
+    margin: 0 auto;
+    width: 800px;
+}
+
+#main-header {
+    font-family: sans-serif;
+}
+
+#main-section {
+    position: relative;
+}
+
+#main-section .menu, #main-canvas {
+    position: absolute;
+}
+
+.menu {
+    background-color: white;
+    width: 600px;
+    height: 400px;
+    top: 100px;
+    left: 100px;
+}
+
+.menu-page {
+    display: none;
+    margin: 100px;
+}
+
+.menu-heading {
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 32px;
+}
+
+.menu-button-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.menu-button {
+    font-family: sans-serif;
+    font-size: 16px;
+    background-color: #DFDFDF;
+    border-radius: 5px;
+    width: 200px;
+    height: 64px;
+    margin: 30px 10px;
+}
+
 .horizontal-list-heading {
     margin: 0;
 }
