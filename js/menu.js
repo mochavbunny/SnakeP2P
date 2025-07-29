@@ -3,15 +3,15 @@
 class Menu {
     static #menuMain;
     static #currentMenuPage;
-    static #pages;
+    static #pages = {};
 
     
     static init() {
         this.#menuMain = document.getElementById("menu-main");
-        this.#pages = {
-            [Constants.menuPages.gameMode]: document.getElementById(Constants.menuPages.gameMode),
-            [Constants.menuPages.gameOver]: document.getElementById(Constants.menuPages.gameOver)
-        }
+        
+        Object.values(Constants.menuPages).forEach((value) => {
+            this.#pages[value] = document.getElementById(value);
+        });
     }
 
 
