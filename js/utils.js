@@ -2,10 +2,10 @@
 
 class Utils {
     static #oppositeDirections = {
-        "right": "left",
-        "left":  "right",
-        "up":    "down",
-        "down":  "up",
+        [Constants.dir.right]: Constants.dir.left,
+        [Constants.dir.left]:  Constants.dir.right,
+        [Constants.dir.up]:    Constants.dir.down,
+        [Constants.dir.down]:  Constants.dir.up
     }
 
 
@@ -16,5 +16,10 @@ class Utils {
 
     static getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min) + min);
+    }
+
+
+    static coordsEqual(c0, c1) {
+        return (c0[0] === c1[0] && c0[1] === c1[1]);
     }
 }

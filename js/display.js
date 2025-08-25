@@ -35,16 +35,13 @@ class Display {
     }
 
 
-    static draw(snake, apple) {
+    static draw(snakes, apple) {
         this.clear();
         this.drawField();
 
-        if (typeof snake !== "undefined") {
-            this.drawSnake(snake, this.#player1HeadColor, this.#player1BodyColor);
-
-            if (Game.multiplayer) {
-                this.drawSnake(snake, this.#player2HeadColor, this.#player2BodyColor);
-            }
+        if (typeof snakes !== "undefined") {
+            this.drawSnake(snakes[0], this.#player1HeadColor, this.#player1BodyColor);
+            //this.drawSnake(snake, this.#player2HeadColor, this.#player2BodyColor);
         }
 
         if (typeof apple !== "undefined") {
@@ -82,7 +79,7 @@ class Display {
 
 
     static drawSnake(snake, headColor, bodyColor) {
-        snake.forEach((block, index) => {
+        snake.coords.forEach((block, index) => {
             const snakeColor = (index === 0) ? headColor : bodyColor;
             this.drawSquare(block[0], block[1], snakeColor);
         })
