@@ -77,7 +77,7 @@ class Game {
         this.#isGameOver = false;
         this.#initBoard();
 
-        this.#updateInterval = setInterval(() => this.#update(), 250);
+        this.#updateInterval = setInterval(() => this.#update(), Constants.updateRate);
     }
 
 

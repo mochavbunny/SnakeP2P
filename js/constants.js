@@ -3,6 +3,7 @@
 class Constants {
     static columns = 20;
     static rows = 15;
+    static updateRate = 250;
     
     static menuPages = {
         gameMode: "game-mode-menu",
