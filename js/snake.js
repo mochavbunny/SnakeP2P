@@ -125,13 +125,13 @@ class Snake {
     /**
      * Checks the collisions and returns true if there is a collision, otherwise returns false
      */
-    checkCollision() {
+    checkCollision(snakes, apple) {
         const currentHead = this.coords[0];
         let collisionFlag = Constants.collisionFlag.none;
 
         // Apple collision
-        if (Utils.coordsEqual(currentHead, Game.apple)) {
-            Game.apple = null;
+        if (Utils.coordsEqual(currentHead, apple)) {
+            //Game.apple = null;
             this.coords.push([...this.#lastTailBlock]);
             collisionFlag = Constants.collisionFlag.apple;
         }
@@ -145,7 +145,7 @@ class Snake {
         }
 
         // Snake collisions
-        Game.snakes.forEach(snake => {
+        snakes.forEach(snake => {
             snake.coords.forEach((coord, i) => {
                 const block = this.coords[i];
 

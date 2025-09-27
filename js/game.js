@@ -89,9 +89,11 @@ class Game {
 
             const collisionSet = [];
             this.snakes.forEach(snake => {
-                collisionFlag = snake.checkCollision();
+                collisionFlag = snake.checkCollision(this.snakes, this.apple);
                 if (collisionFlag === Constants.collisionFlag.collision) {
                     collisionSet.push(snake);
+                } else if (collisionFlag === Constants.collisionFlag.apple) {
+                    this.apple = null;
                 }
             });
 
