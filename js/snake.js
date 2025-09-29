@@ -15,6 +15,7 @@ class Snake {
     direction;
 
     //static #snakeDirection;
+    
     /**
      * Direction which we request the snake moves in on the next update().
      * If it's not null and not the opposite to the #snakeDirection, it will be applied.
@@ -26,6 +27,14 @@ class Snake {
     playerNumber;
 
     wins = 0;
+
+    #inputQueue = [];
+
+    #inputQueueLimit = 10;
+    
+    #queueInUse = false;
+
+    #startingConfig;
 
     
     static #startingConfigs = [
@@ -44,8 +53,6 @@ class Snake {
             direction: Constants.dir.left
         }
     ];
-
-    #startingConfig;
 
 
     constructor(playerNumber) {
@@ -69,56 +76,106 @@ class Snake {
         document.addEventListener("keydown", (event) => {
             switch (event.key) {
                 case "ArrowUp":
-                    event.preventDefault();
-                    this.#newDirection = Constants.dir.up;
-                    break;
                 case "ArrowDown":
-                    event.preventDefault();
-                    this.#newDirection = Constants.dir.down;
-                    break;
                 case "ArrowLeft":
-                    event.preventDefault();
-                    this.#newDirection = Constants.dir.left;
-                    break;
                 case "ArrowRight":
                     event.preventDefault();
-                    this.#newDirection = Constants.dir.right;
+                    this.#queueInUse = true;
+                    this.#handleDirectionalInput(event.key);
                     break;
             }
-        })
+        });
     }
 
 
-    update() {
-        this.#updateDirection();
-        this.#moveSnake()
+    #handleDirectionalInput(key) {
+        switch (key) {
+            case "ArrowUp":
+                this.#addDirectionToInputQueue(Constants.dir.up);
+                break;
+            case "ArrowDown":
+                this.#addDirectionToInputQueue(Constants.dir.down);
+                break;
+            case "ArrowLeft":
+                this.#addDirectionToInputQueue(Constants.dir.left);
+                break;
+            case "ArrowRight":
+                this.#addDirectionToInputQueue(Constants.dir.right);
+                break;
+        }
     }
 
 
-    #updateDirection() {
+    /*
+    #setNewDirection(dir) {
         if (this.#newDirection === Constants.dir.none) {
-            return;
+            this.#newDirection = dir;
         }
+    }
+    */
 
-        if (Utils.areOppositeDirections(this.#newDirection, this.direction)) {
-            return;
+
+    #addDirectionToInputQueue(dir) {
+        if (this.#inputQueue.length <= this.#inputQueueLimit &&
+            this.#inputQueue[this.#inputQueue.length - 1] !== dir
+        ) {
+            this.#inputQueue.push(dir);
         }
-
-        this.direction = this.#newDirection;
-        this.#newDirection = Constants.dir.none;
     }
 
 
-    /**
+    #removeFromInputQueue() {
+        this.#inputQueue.splice(0, 1);
+    }
+
+    
+    /** 
      * Movement is implemented in reverse.
      * The last block is moved into the position of the next one.
      * And the next block is moved into the position of the one after.
      * The process is repeated until the head.
      * Then the head is moved in the requested direction.
      */
-    #moveSnake() {
+    update() {
+        this.#updateDirectionUsingQueue();
+        this.#newDirection = Constants.dir.none;
         this.#moveTail();
         this.#moveBlock(this.coords[0], this.direction);
+        this.#resetQueueCheck();
+    }
+
+
+    /*
+    #updateDirection() {
+        if (Utils.areOppositeDirections(this.#newDirection, this.direction)) {
+            return;
+        }
+
+        if (this.#newDirection === Constants.dir.none) {
+            return;
+        }
+
+        this.direction = this.#newDirection;
+    }
+    */
+
+
+    #updateDirectionUsingQueue() {
+        let validDirection = false;
+        do {
+            if (this.#inputQueue.length === 0) {
+                return;
+            }
+
+            if (Utils.areOppositeDirections(this.#inputQueue[0], this.direction)) {
+                this.#removeFromInputQueue();
+            } else {
+                validDirection = true;
+            }
+        } while (validDirection === false);
+
+        this.direction = this.#inputQueue[0];
+        this.#removeFromInputQueue();
     }
 
 
@@ -188,6 +245,19 @@ class Snake {
         for (let i = this.coords.length - 1; i >= 1; i--) {
             const nextBlock = this.coords[i - 1];
             this.coords[i] = [nextBlock[0], nextBlock[1]];
+        }
+    }
+
+
+    #resetQueueCheck() {
+        if (this.#queueInUse) {
+            this.#queueInUse = false
+        } else {
+            if (this.#inputQueue.length > 0) {
+                this.#inputQueue = [this.#inputQueue[this.#inputQueue.length - 1]];
+            } else {
+                this.#inputQueue = [];
+            }
         }
     }
 }
