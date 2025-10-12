@@ -1,19 +1,40 @@
 "use strict";
 
 class Game {
-    static #display;
-
+    /**
+     * An array that stores an arbitrary number of players, however only 2 are supported at this stage
+     */
     static snakes = [];
     
+    /**
+     * Flag for the #update function to know when to stop the game
+     */
     static #isGameOver = false;
-    static #isPaused = true;
-    static #updateInterval;
-    static gameMode;
-    static startingCoords;
 
+    /**
+     * Flag that stops the update function from running while true
+     */
+    static #isPaused = true;
+
+    /**
+     * Stores the Interval object that runs the #update function
+     */
+    static #updateInterval;
+
+    /**
+     * Contains a gameModes constant to indicate the current game mode
+     */
+    static gameMode;
+
+    /**
+     * The coordinates of the apple
+     */
     static apple;
 
 
+    /**
+     * The first function run, responsible for setting up initial objects
+     */
     static run() {
         Display.initialize();
         
@@ -23,6 +44,9 @@ class Game {
     }
 
 
+    /**
+     * Initializes various aspects of the game when a game mode is selected, including setting up players
+     */
     static #initBoard() {
         this.snakes = [];
         if (this.gameMode === Constants.gameModes.single) {
@@ -40,6 +64,9 @@ class Game {
     }
 
 
+    /**
+     * Sets up the HTML buttons for the game's menu
+     */
     static #initButtons() {
         const sp = document.getElementById("singleplayer-button");
         const mp = document.getElementById("multiplayer-button");
@@ -72,6 +99,9 @@ class Game {
     }
 
 
+    /**
+     * Sets up the game when a game mode is selected
+     */
     static #initGame() {
         this.#isPaused = false;
         this.#isGameOver = false;
@@ -81,6 +111,9 @@ class Game {
     }
 
 
+    /**
+     * Run at every update interval, responsible for all of the real time game logic
+     */
     static #update() {
         let collisionFlag = Constants.collisionFlag.none;
 
@@ -124,6 +157,10 @@ class Game {
     }
 
 
+    /**
+     * Returns a 2D array of coordinates with the spaces occupied by the players filtered out
+     * @returns {Array}
+     */
     static #getEmptySquares() {
         const allSquares = [];
         for (let y = 0; y < Constants.rows; y++) {
@@ -147,6 +184,10 @@ class Game {
     }
 
 
+    /**
+     * Places an apple on one of the board's empty spaces
+     * @param {Array} emptySquares 
+     */
     static #spawnApple(emptySquares) {
         const i = Utils.getRandomInt(0, emptySquares.length - 1);
         this.apple = emptySquares[i];

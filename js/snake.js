@@ -22,21 +22,42 @@ class Snake {
      */
     #newDirection = Constants.dir.none;
 
+    /**
+     * The coordinates of the tail before the snake is moved one space.
+     * Used to extend the length of the snake if the apple is eaten
+     */
     #lastTailBlock = [0,0];
     
+    /**
+     * The number of this player. Used for various purposed in the multiplayer modes.
+     */
     playerNumber;
 
-    wins = 0;
-
+    /**
+     * A queue of direction constants to facilitate responsive multi-tap input
+     */
     #inputQueue = [];
 
+    /**
+     * The size limit of #inputQueue
+     */
     #inputQueueLimit = 10;
     
+    /**
+     * Stores whether the multi-tap
+     */
     #queueInUse = false;
 
+    /**
+     * The index used for selecting an element of #startingConfig in the constructor
+     */
     #startingConfig;
 
-    
+    /**
+     * An array that stores various starting configurations for the snake.
+     * Gives position and direction.
+     * Different players should have different starting configs.
+     */
     static #startingConfigs = [
         {
             position: [
@@ -55,6 +76,10 @@ class Snake {
     ];
 
 
+    /**
+     * Initialises the snake
+     * @param {number} playerNumber 
+     */
     constructor(playerNumber) {
         this.playerNumber = playerNumber;
         this.#startingConfig = Snake.#startingConfigs[playerNumber - 1];
@@ -63,7 +88,10 @@ class Snake {
     }
 
 
-    #init(coords) {
+    /**
+     * Set the snake's coordinates to the starting position
+     */
+    #init() {
         // Creates a deep copy of the starting position
         this.coords = this.#startingConfig.position.map(coord => {
             return [...coord];
@@ -72,6 +100,9 @@ class Snake {
     }
 
 
+    /**
+     * Adds the event listeners for the player input
+     */
     #initControls() {
         document.addEventListener("keydown", (event) => {
             switch (event.key) {
@@ -88,6 +119,10 @@ class Snake {
     }
 
 
+    /**
+     * Performs the associated task based on the key being pressed
+     * @param {string} key
+     */
     #handleDirectionalInput(key) {
         switch (key) {
             case "ArrowUp":
@@ -115,6 +150,10 @@ class Snake {
     */
 
 
+    /**
+     * Adds a direction constant value to the end of #inputQueue
+     * @param {string} dir
+     */
     #addDirectionToInputQueue(dir) {
         if (this.#inputQueue.length <= this.#inputQueueLimit &&
             this.#inputQueue[this.#inputQueue.length - 1] !== dir
@@ -124,6 +163,9 @@ class Snake {
     }
 
 
+    /**
+     * Removes a value from the start of #inputQueue
+     */
     #removeFromInputQueue() {
         this.#inputQueue.splice(0, 1);
     }
@@ -160,6 +202,10 @@ class Snake {
     */
 
 
+    /**
+     * Updates the direction based on the first element of #inputQueue (i.e. the front)
+     * If the direction is the opposite of the current direction, it is removed and the next value is used instead
+     */
     #updateDirectionUsingQueue() {
         let validDirection = false;
         do {
@@ -181,6 +227,7 @@ class Snake {
 
     /**
      * Checks the collisions and returns true if there is a collision, otherwise returns false
+     * Called by the Game's #update function after the Snake's update function is called
      */
     checkCollision(snakes, apple) {
         const currentHead = this.coords[0];
@@ -221,6 +268,11 @@ class Snake {
     }
 
 
+    /**
+     * Takes in a coordinate and a direction, and moves the coordinate one step in that direction
+     * @param {Array} block 
+     * @param {string} direction 
+     */
     #moveBlock(block, direction) {
         switch (direction) {
             case Constants.dir.left:
@@ -239,8 +291,12 @@ class Snake {
     }
 
 
+    /**
+     * Shifts everything in coords one position in the array forward.
+     * The first element is left the same as the second element.
+     * The last element is overwritten, but saved in #lastTailBlock.
+     */
     #moveTail() {
-        // Save the current tail block in case 
         this.#lastTailBlock = this.coords[this.coords.length - 1];
         for (let i = this.coords.length - 1; i >= 1; i--) {
             const nextBlock = this.coords[i - 1];
@@ -249,6 +305,9 @@ class Snake {
     }
 
 
+    /**
+     * Responsible for determining if the input queue is being used, and clears it if not.
+     */
     #resetQueueCheck() {
         if (this.#queueInUse) {
             this.#queueInUse = false
