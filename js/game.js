@@ -45,26 +45,6 @@ class Game {
 
 
     /**
-     * Initializes various aspects of the game when a game mode is selected, including setting up players
-     */
-    static #initBoard() {
-        this.snakes = [];
-        if (this.gameMode === Constants.gameModes.single) {
-            const snake1 = new Snake(1);
-            this.snakes.push(snake1);
-        } else if (this.gameMode === Constants.gameModes.multiLocal) {
-            const snake1 = new Snake(1);
-            const snake2 = new Snake(2);
-            this.snakes.push(snake1);
-            this.snakes.push(snake2);
-        }
-
-        const emptySquares = this.#getEmptySquares();
-        this.#spawnApple(emptySquares);
-    }
-
-
-    /**
      * Sets up the HTML buttons for the game's menu
      */
     static #initButtons() {
@@ -80,12 +60,11 @@ class Game {
         });
 
         mp.addEventListener("click", e => {
-            alert("Coming soon!");
-            /*Menu.hideMenu();
+            //alert("Coming soon!");
+            Menu.hideMenu();
             //this.gameMode = Constants.gameModes.multiOnline;
             this.gameMode = Constants.gameModes.multiLocal;
             this.#initGame();
-            */
         });
 
         gm.addEventListener("click", e => {
@@ -112,31 +91,41 @@ class Game {
 
 
     /**
+     * Initializes various aspects of the game when a game mode is selected, including setting up players
+     */
+    static #initBoard() {
+        this.snakes = [];
+        if (this.gameMode === Constants.gameModes.single) {
+            const snake1 = new Snake(1);
+            this.snakes.push(snake1);
+        } else if (this.gameMode === Constants.gameModes.multiLocal) {
+            const snake1 = new Snake(1);
+            const snake2 = new Snake(2);
+            this.snakes.push(snake1);
+            this.snakes.push(snake2);
+        }
+
+        const emptySquares = this.#getEmptySquares();
+        this.#spawnApple(emptySquares);
+    }
+
+
+    /**
      * Run at every update interval, responsible for all of the real time game logic
      */
     static #update() {
-        let collisionFlag = Constants.collisionFlag.none;
-
         if (!this.#isPaused && !this.#isGameOver) {
             this.snakes.forEach(snake => snake.update());
 
-            const collisionSet = [];
             this.snakes.forEach(snake => {
-                collisionFlag = snake.checkCollision(this.snakes, this.apple);
+                let collisionFlag = snake.checkCollision(this.snakes, this.apple);
+
                 if (collisionFlag === Constants.collisionFlag.collision) {
-                    collisionSet.push(snake);
+                    // TO DO: functionality for determining winner
+                    this.#isGameOver = true;
                 } else if (collisionFlag === Constants.collisionFlag.apple) {
                     this.apple = null;
-                }
-            });
 
-            if (collisionSet.length > 0) {
-                this.#isGameOver = true;
-                // TO DO: functionality for determining winner
-                
-            } else {
-                // Apple was consumed.
-                if (collisionFlag === Constants.collisionFlag.apple) {
                     const emptySquares = this.#getEmptySquares();
 
                     if (emptySquares.length > 0) {
@@ -146,13 +135,15 @@ class Game {
                         this.#isGameOver = true;
                     }
                 }
+            });
 
+            if (this.#isGameOver) {
+                clearInterval(this.#updateInterval);
+                Menu.setMenu(Constants.menuPages.gameOver);
+                Menu.showMenu();
+            } else {
                 Display.draw(this.snakes, this.apple);
             }
-        } else if (this.#isGameOver) {
-            clearInterval(this.#updateInterval);
-            Menu.setMenu(Constants.menuPages.gameOver);
-            Menu.showMenu();
         }
     }
 
@@ -173,7 +164,8 @@ class Game {
         return allSquares.filter(square => {
             return this.snakes.every(snake => {
                 return snake.coords.every(snakeBlock => {
-                    if (snakeBlock[0] === square[0] && snakeBlock[1] === square[1]) {
+                    // If a snake is occupying this coordinate, mark it as unavailable
+                    if (Utils.coordsEqual(snakeBlock, square)) {
                         return false;
                     } else {
                         return true;

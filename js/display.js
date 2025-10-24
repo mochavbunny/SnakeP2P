@@ -6,10 +6,8 @@ class Display {
     */
     static #backgroundColor = "#e0e0e0";
     static #blankSquareColor = "#c0c0c0";
-    static #player1BodyColor = "#00FF00";
-    static #player1HeadColor = "#00D700";
-    static #player2BodyColor = "#00EFFF";
-    static #player2HeadColor = "#00CFFF";
+    static #bodyColors = ["#00FF00", "#00EFFF"];
+    static #headColors = ["#00D700", "#00CFFF"];
     static #appleColor = "#FF0000";
 
     /**
@@ -64,8 +62,9 @@ class Display {
         this.drawField();
 
         if (typeof snakes !== "undefined") {
-            this.drawSnake(snakes[0], this.#player1HeadColor, this.#player1BodyColor);
-            //this.drawSnake(snake, this.#player2HeadColor, this.#player2BodyColor);
+            snakes.forEach((snake, index) => {
+                this.drawSnake(snake, this.#headColors[index], this.#bodyColors[index]);
+            });
         }
 
         if (typeof apple !== "undefined") {

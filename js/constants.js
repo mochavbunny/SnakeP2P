@@ -47,11 +47,40 @@ class Constants {
     };
 
     /**
-     * Used by check
+     * Used by checkCollision on the Snake class to indicate what it has collided with
      */
     static collisionFlag = {
         none: 0,
         collision: 1,
         apple: 2
+    };
+
+    /**
+     * All of the different user inputs for the game
+     */
+    static inputAction = {
+        none: 0,
+        up: 1,
+        down: 2,
+        left: 3,
+        right: 4
+    }
+
+    /**
+     * Maps inputAction to a specific key code, can use various different mappings
+     */
+    static inputActionMap = {
+        1: {
+            "ArrowUp": Constants.inputAction.up,
+            "ArrowDown": Constants.inputAction.down,
+            "ArrowLeft": Constants.inputAction.left,
+            "ArrowRight": Constants.inputAction.right
+        },
+        2: {
+            "KeyW": Constants.inputAction.up,
+            "KeyS": Constants.inputAction.down,
+            "KeyA": Constants.inputAction.left,
+            "KeyD": Constants.inputAction.right
+        }
     };
 }

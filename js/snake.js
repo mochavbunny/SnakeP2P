@@ -61,15 +61,15 @@ class Snake {
     static #startingConfigs = [
         {
             position: [
-                [2, 1],
+                [1, 1],
                 [1, 1]
             ],
             direction: Constants.dir.right
         },
         {
             position: [
-                [Constants.columns - 3, Constants.columns - 2],
-                [Constants.rows - 2, Constants.rows - 2]
+                [Constants.columns - 3, Constants.rows - 2],
+                [Constants.columns - 2, Constants.rows - 2]
             ],
             direction: Constants.dir.left
         }
@@ -99,20 +99,32 @@ class Snake {
         this.direction = this.#startingConfig.direction;
     }
 
-
+    
     /**
      * Adds the event listeners for the player input
      */
     #initControls() {
-        document.addEventListener("keydown", (event) => {
-            switch (event.key) {
-                case "ArrowUp":
-                case "ArrowDown":
-                case "ArrowLeft":
-                case "ArrowRight":
-                    event.preventDefault();
+        /*
+        TO DO: For online multiplayer, no event listener should be added if this
+        snake represents the opposing player.
+        */
+        document.addEventListener("keydown", e => {
+            let inputAction;
+
+            if (Game.gameMode === Constants.gameModes.multiLocal) {
+                inputAction = this.#getInputAction(this.playerNumber, e.code);
+            } else {
+                inputAction = this.#getInputAction(1, e.code);
+            }
+            
+            switch (inputAction) {
+                case Constants.inputAction.up:
+                case Constants.inputAction.down:
+                case Constants.inputAction.left:
+                case Constants.inputAction.right:
+                    e.preventDefault();
                     this.#queueInUse = true;
-                    this.#handleDirectionalInput(event.key);
+                    this.#handleDirectionalInput(inputAction);
                     break;
             }
         });
@@ -120,21 +132,34 @@ class Snake {
 
 
     /**
-     * Performs the associated task based on the key being pressed
-     * @param {string} key
+     * Gets the inputAction constant based on the player number of the snake
+     * The difference in player number is only relevant in local multiplayer
+     * All other game modes will assume the player 1 controls
+     * @param {number} actionSet
+     * @param {string} keyCode 
+     * @returns {string}
      */
-    #handleDirectionalInput(key) {
-        switch (key) {
-            case "ArrowUp":
+    #getInputAction(actionSet, keyCode) {
+        return Constants.inputActionMap[actionSet][keyCode];
+    }
+
+
+    /**
+     * Performs the associated task based on the key being pressed
+     * @param {string} inputAction
+     */
+    #handleDirectionalInput(inputAction) {
+        switch (inputAction) {
+            case Constants.inputAction.up:
                 this.#addDirectionToInputQueue(Constants.dir.up);
                 break;
-            case "ArrowDown":
+            case Constants.inputAction.down:
                 this.#addDirectionToInputQueue(Constants.dir.down);
                 break;
-            case "ArrowLeft":
+            case Constants.inputAction.left:
                 this.#addDirectionToInputQueue(Constants.dir.left);
                 break;
-            case "ArrowRight":
+            case Constants.inputAction.right:
                 this.#addDirectionToInputQueue(Constants.dir.right);
                 break;
         }
@@ -251,14 +276,14 @@ class Snake {
         // Snake collisions
         snakes.forEach(snake => {
             snake.coords.forEach((coord, i) => {
-                const block = this.coords[i];
+                //const block = this.coords[i];
 
                 // If this is the head of the current snake, ignore it
                 if (i === 0 && this.playerNumber === snake.playerNumber) {
                     return;
                 }
 
-                if (Utils.coordsEqual(currentHead, block)) {
+                if (Utils.coordsEqual(currentHead, coord)) {
                     collisionFlag = Constants.collisionFlag.collision;
                 }
             });
