@@ -1,76 +1,52 @@
 "use strict";
 
 class Game {
-    static #display;
+    /**
+     * An array that stores an arbitrary number of players, however only 2 are supported at this stage
+     */
+    static snakes = [];
+    
+    /**
+     * Flag for the #update function to know when to stop the game
+     */
+    static #isGameOver = false;
 
     /**
-     * The first element is the head.
-     * The last element is the last block of the tail.
-     *
-     * Example snake: [[1, 0], [2, 0]]
-    */
-    static #snake;
-    /**
-     * up, down, left or right.
+     * Flag that stops the update function from running while true
      */
-    static #snakeDirection;
-    /**
-     * Direction which we request the snake moves in on the next update().
-     * If it's not null and not the opposite to the #snakeDirection, it will be applied.
-     */
-    static #snakeNewDirection;
-    static #isGameOver = false;
     static #isPaused = true;
+
+    /**
+     * Stores the Interval object that runs the #update function
+     */
     static #updateInterval;
 
-    static #apple;
+    /**
+     * Contains a gameModes constant to indicate the current game mode
+     */
+    static gameMode;
+
+    /**
+     * The coordinates of the apple
+     */
+    static apple;
 
 
+    /**
+     * The first function run, responsible for setting up initial objects
+     */
     static run() {
         Display.initialize();
         
         Menu.setMenu(Constants.menuPages.gameMode);
         this.#initButtons();
-        this.#initControls();
         Display.draw();
     }
 
 
-    static #initBoard() {
-        this.#snake = [[2, 1], [1, 1]];
-        this.#snakeDirection = "right";
-        this.#snakeNewDirection = "right";
-
-        const emptySquares = this.#getEmptySquares();
-        this.#spawnApple(emptySquares);
-    }
-
-
-    static #initControls() {
-        document.addEventListener("keydown", (event) => {
-            switch (event.key) {
-                case "ArrowUp":
-                    event.preventDefault();
-                    this.#snakeNewDirection = "up";
-                    break;
-                case "ArrowDown":
-                    event.preventDefault();
-                    this.#snakeNewDirection = "down";
-                    break;
-                case "ArrowLeft":
-                    event.preventDefault();
-                    this.#snakeNewDirection = "left";
-                    break;
-                case "ArrowRight":
-                    event.preventDefault();
-                    this.#snakeNewDirection = "right";
-                    break;
-
-            }
-        })
-    }
-
-
+    /**
+     * Sets up the HTML buttons for the game's menu
+     */
     static #initButtons() {
         const sp = document.getElementById("singleplayer-button");
         const mp = document.getElementById("multiplayer-button");
@@ -79,11 +55,16 @@ class Game {
 
         sp.addEventListener("click", e => {
             Menu.hideMenu();
+            this.gameMode = Constants.gameModes.single;
             this.#initGame();
         });
 
         mp.addEventListener("click", e => {
-            alert("Coming soon!");
+            //alert("Coming soon!");
+            Menu.hideMenu();
+            //this.gameMode = Constants.gameModes.multiOnline;
+            this.gameMode = Constants.gameModes.multiLocal;
+            this.#initGame();
         });
 
         gm.addEventListener("click", e => {
@@ -97,138 +78,80 @@ class Game {
     }
 
 
+    /**
+     * Sets up the game when a game mode is selected
+     */
     static #initGame() {
         this.#isPaused = false;
         this.#isGameOver = false;
         this.#initBoard();
 
-        this.#updateInterval = setInterval(() => this.#update(), 250);
+        this.#updateInterval = setInterval(() => this.#update(), Constants.updateRate);
     }
 
 
+    /**
+     * Initializes various aspects of the game when a game mode is selected, including setting up players
+     */
+    static #initBoard() {
+        this.snakes = [];
+        if (this.gameMode === Constants.gameModes.single) {
+            const snake1 = new Snake(1);
+            this.snakes.push(snake1);
+        } else if (this.gameMode === Constants.gameModes.multiLocal) {
+            const snake1 = new Snake(1);
+            const snake2 = new Snake(2);
+            this.snakes.push(snake1);
+            this.snakes.push(snake2);
+        }
+
+        const emptySquares = this.#getEmptySquares();
+        this.#spawnApple(emptySquares);
+    }
+
+
+    /**
+     * Run at every update interval, responsible for all of the real time game logic
+     */
     static #update() {
         if (!this.#isPaused && !this.#isGameOver) {
-            this.#updateDirection();
-            this.#checkHeadCollision();
+            this.snakes.forEach(snake => snake.update());
 
-            // Additional check after possible #checkHeadCollision() isGameOver changes.
-            if (!this.#isGameOver) {
-                this.#moveSnake();
-            }
+            this.snakes.forEach(snake => {
+                let collisionFlag = snake.checkCollision(this.snakes, this.apple);
 
-            // Apple was consumed.
-            if (!this.#apple) {
-                const emptySquares = this.#getEmptySquares();
-
-                if (emptySquares.length > 0) {
-                    this.#spawnApple(emptySquares);
-                } else {
-                    alert("You won");
+                if (collisionFlag === Constants.collisionFlag.collision) {
+                    // TO DO: functionality for determining winner
                     this.#isGameOver = true;
+                } else if (collisionFlag === Constants.collisionFlag.apple) {
+                    this.apple = null;
+
+                    const emptySquares = this.#getEmptySquares();
+
+                    if (emptySquares.length > 0) {
+                        this.#spawnApple(emptySquares);
+                    } else {
+                        alert("You won");
+                        this.#isGameOver = true;
+                    }
                 }
-            }
-        } else if (this.#isGameOver) {
-            clearInterval(this.#updateInterval);
-            Menu.setMenu(Constants.menuPages.gameOver);
-            Menu.showMenu();
-        }
+            });
 
-        Display.draw(this.#snake, this.#apple);
-    }
-
-
-    static #updateDirection() {
-        if (!this.#snakeNewDirection) {
-            return;
-        }
-
-        if (Utils.areOppositeDirections(this.#snakeNewDirection, this.#snakeDirection)) {
-            return;
-        }
-
-        this.#snakeDirection = this.#snakeNewDirection;
-        this.#snakeNewDirection = null;
-    }
-
-
-    /**
-     * Checks the collisions and based on them updates the game state, including the game over flag.
-     */
-    static #checkHeadCollision() {
-        const currentHead = this.#snake[0];
-
-        // Position at which the snake's head
-        // is going to be after the update() is done
-        const futureHead = [currentHead[0], currentHead[1]];
-        this.#moveBlock(futureHead, this.#snakeDirection);
-
-        // Apple collision
-        if (futureHead[0] === this.#apple[0] && futureHead[1] === this.#apple[1]) {
-            this.#apple = null;
-            this.#snake.push([0, 0]);
-            return;
-        }
-
-        // Wall collisions
-        const horizontalCollision = futureHead[0] < 0 || futureHead[0] > Constants.columns - 1;
-        const verticalCollision = futureHead[1] < 0 || futureHead[1] > Constants.rows - 1;
-
-        if (horizontalCollision || verticalCollision) {
-            this.#isGameOver = true;
-            return;
-        }
-
-        // Snake tail collisions
-        for (let i = 1; i < this.#snake.length; i++) {
-            const block = this.#snake[i];
-
-            if (futureHead[0] === block[0] && futureHead[1] === block[1]) {
-                this.#isGameOver = true;
-                return;
+            if (this.#isGameOver) {
+                clearInterval(this.#updateInterval);
+                Menu.setMenu(Constants.menuPages.gameOver);
+                Menu.showMenu();
+            } else {
+                Display.draw(this.snakes, this.apple);
             }
         }
     }
 
 
     /**
-     * Movement is implemented in reverse.
-     * The last block is moved into the position of the next one.
-     * And the next block is moved into the position of the one after.
-     * The process is repeated until the head.
-     * Then the head is moved in the requested direction.
+     * Returns a 2D array of coordinates with the spaces occupied by the players filtered out
+     * @returns {Array}
      */
-    static #moveSnake() {
-        this.#moveTail();
-        this.#moveBlock(this.#snake[0], this.#snakeDirection);
-    }
-
-
-    static #moveBlock(block, direction) {
-        switch (direction) {
-            case "left":
-                block[0] -= 1;
-                break;
-            case "right":
-                block[0] += 1;
-                break;
-            case "up":
-                block[1] -= 1;
-                break;
-            case "down":
-                block[1] += 1;
-                break;
-        }
-    }
-
-
-    static #moveTail() {
-        for (let i = this.#snake.length - 1; i >= 1; i--) {
-            const nextBlock = this.#snake[i - 1];
-            this.#snake[i] = [nextBlock[0], nextBlock[1]];
-        }
-    }
-
-
     static #getEmptySquares() {
         const allSquares = [];
         for (let y = 0; y < Constants.rows; y++) {
@@ -238,23 +161,28 @@ class Game {
         }
 
         // Filter out squares that contain snake blocks.
-        return allSquares.filter((square) => {
-            for (let i = 0; i < this.#snake.length; i++) {
-                const snakeBlock = this.#snake[i];
-
-                if (snakeBlock[0] === square[0] && snakeBlock[1] === square[1]) {
-                    return false;
-                }
-            }
-
-            return true;
+        return allSquares.filter(square => {
+            return this.snakes.every(snake => {
+                return snake.coords.every(snakeBlock => {
+                    // If a snake is occupying this coordinate, mark it as unavailable
+                    if (Utils.coordsEqual(snakeBlock, square)) {
+                        return false;
+                    } else {
+                        return true;
+                    };
+                });
+            });
         });
     }
 
 
+    /**
+     * Places an apple on one of the board's empty spaces
+     * @param {Array} emptySquares 
+     */
     static #spawnApple(emptySquares) {
         const i = Utils.getRandomInt(0, emptySquares.length - 1);
-        this.#apple = emptySquares[i];
+        this.apple = emptySquares[i];
     }
 }
 
